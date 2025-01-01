@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="電商網站，提供吉伊卡哇的優質商品。">
+    <meta name="keywords" content="吉伊卡哇, 電商, 商品, 小桃, 小八, 烏薩奇">
+    <meta name="author" content="吉伊卡哇團隊">
+    <title>ちぃかわマーケット</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('oo.jpg');
+            background-color: rgba(255, 255, 255, 0.8);
+            background-blend-mode: lighten;
+            background-attachment: fixed;
+            background-size: cover;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+        /* 使用圖片作為背景 */
+            background-image: url('標題.png'); 
+            background-size: cover; 
+            background-position: left; 
+            color: #fff; 
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        header nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .categories {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .categories button {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #7cc2d8;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .categories button:hover {
+            background-color: #7cc2d8;
+        }
+
+        .search-bar {
+            margin: 30px auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-bar input {
+            width: 300px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .highlighted-categories {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .highlighted-categories img {
+            width: 200px;
+            height: 150px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .highlighted-categories img:hover {
+            transform: scale(1.05);
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 50px;
+            flex: 1;
+        }
+
+        .product-card {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .product-details {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .product-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            color: #7cc2d8;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .add-to-cart {
+            margin-top: 15px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #7cc2d8;
+            color: #fff;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .add-to-cart:hover {
+            background-color: #7cc2d8;
+        }
+
+        footer {
+            background-color: #000;
+            
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #cart-message {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #7cc2d8;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+        }
+
+        .cart-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+        }
+
+        .cart-container h3 {
+            margin: 0 0 10px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .cart-container ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .cart-container ul li {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .cart-container .cart-total {
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: right;
+        }
+    </style>
+    <script>
+        const cart = [];
+
+        function addToCart(productName, productPrice) {
+            const existingItem = cart.find(item => item.name === productName);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ name: productName, price: productPrice, quantity: 1 });
+            }
+            updateCartDisplay();
+            showCartMessage(`${productName} 已加入購物車!`);
+        }
+
+        function updateCartDisplay() {
+            const cartContainer = document.getElementById('cart-container');
+            const cartList = cartContainer.querySelector('ul');
+            const cartTotal = cartContainer.querySelector('.cart-total');
+
+            cartList.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+                cartList.innerHTML += `
+                    <li>
+                        ${item.name} x ${item.quantity} 
+                        <span>NT$${item.price * item.quantity}</span>
+                        <button onclick="removeFromCart('${item.name}')">移除</button>
+                    </li>`;
+            });
+
+            cartTotal.textContent = `總金額: NT$${total}`;
+            cartContainer.style.display = cart.length > 0 ? 'block' : 'none';
+        }
+
+        function removeFromCart(productName) {
+            const index = cart.findIndex(item => item.name === productName);
+            if (index !== -1) {
+                cart.splice(index, 1);
+                updateCartDisplay();
+            }
+        }
+
+        function showCartMessage(message) {
+            const cartMessage = document.getElementById('cart-message');
+            cartMessage.textContent = message;
+            cartMessage.style.display = 'block';
+
+            setTimeout(() => {
+                cartMessage.style.display = 'none';
+            }, 2000);
+        }
+
+        function filterCategory(category) {
+            const products = document.querySelectorAll('.product-card');
+            products.forEach(product => {
+                if (category === 'all' || product.dataset.category === category) {
+                    product.classList.remove('hidden');
+                } else {
+                    product.classList.add('hidden');
+                }
+            });
+        }
+
+        function searchProducts(query) {
+            const products = document.querySelectorAll('.product-card');
+            products.forEach(product => {
+                const title = product.querySelector('.product-title').textContent;
+                if (title.includes(query)) {
+                    product.classList.remove('hidden');
+                } else {
+                    product.classList.add('hidden');
+                }
+            });
+        }
+
+        function checkoutCart() {
+            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            if (total > 0) {
+                alert(`感謝您的購物! 總金額為 NT$${total}`);
+                cart.length = 0;
+                updateCartDisplay();
+            } else {
+                alert('您的購物車是空的，請先選購商品!');
+            }
+        }
+
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('checkout-button').addEventListener('click', checkoutCart);
+        });
+    </script>
+</head>
+<body>
+
+    
+    <header>
+        <div class="logo">ちぃかわマーケット</div>
+        <nav>
+            <a href="home.html" data-translate="home.html">首頁</a>
+            <a href="#" data-translate="products">商品</a>
+            <a href="#" data-translate="about">會員中心</a>
+            <a href="#" data-translate="contact">聯絡我們</a>
+            <a href="login.html" data-translate="contact">會員登入</a>
+        </nav>
+    </header>
+
+    <div class="login-container">
+        <form action="login.html" method="get"> <!-- 這裡設置了當按下登入後跳轉到期末.html -->       
+        </form>
+    </div>
+
+
+
+
+    <div class="categories">
+        <button onclick="filterCategory('all')">全部</button>
+        <button onclick="filterCategory('rings')">小桃</button>
+        <button onclick="filterCategory('bracelets')">吉伊</button>
+        <button onclick="filterCategory('necklaces')">烏薩奇</button>
+        <button onclick="filterCategory('xiaoba')">小八</button>
+        <button onclick="filterCategory('xiaojiachong')">小甲蟲</button>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" placeholder="搜尋商品..." oninput="searchProducts(this.value)">
+    </div>
+
+    <div id="cart-message"></div>
+
+    <div id="cart-container" class="cart-container">
+        <h3>購物車</h3>
+        <ul></ul>
+        <div class="cart-total">總金額: NT$0</div>
+        <button id="checkout-button" class="checkout">結帳</button>
+    </div>
+
+
+    <div class="container">
+        <div class="product-card" data-category="rings">
+            <img src="ring1.jpg" alt="寄生小桃">
+            <div class="product-details">
+                <div class="product-title">寄生小桃</div>
+                <div class="product-price">NT$500</div>
+                <button class="add-to-cart" onclick="addToCart('寄生小桃', 500)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="rings">
+            <img src="ring2.jpg" alt="飛天小桃">
+            <div class="product-details">
+                <div class="product-title">飛天小桃</div>
+                <div class="product-price">NT$800</div>
+                <button class="add-to-cart" onclick="addToCart('飛天小桃', 800)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="rings">
+            <img src="ring3.jpg" alt="水族館小桃">
+            <div class="product-details">
+                <div class="product-title">水族館小桃</div>
+                <div class="product-price">NT$600</div>
+                <button class="add-to-cart" onclick="addToCart('水族館小桃', 600)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="rings">
+            <img src="ring4.jpg" alt="餐廳小桃">
+            <div class="product-details">
+                <div class="product-title">餐廳小桃</div>
+                <div class="product-price">NT$750</div>
+                <button class="add-to-cart" onclick="addToCart('餐廳小桃', 750)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="rings">
+            <img src="ring5.jpg" alt="小腳小桃">
+            <div class="product-details">
+                <div class="product-title">小腳小桃</div>
+                <div class="product-price">NT$950</div>
+                <button class="add-to-cart" onclick="addToCart('小腳小桃', 950)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="rings">
+            <img src="ring6.jpg" alt="手捧小桃">
+            <div class="product-details">
+                <div class="product-title">手捧小桃</div>
+                <div class="product-price">NT$680</div>
+                <button class="add-to-cart" onclick="addToCart('手捧小桃', 680)">加入購物車</button>
+            </div>
+        </div>
+
+        
+        <div class="product-card" data-category="bracelets">
+            <img src="bracelets1.jpg" alt="超魔法少女系列-吉伊卡哇">
+            <div class="product-details">
+                <div class="product-title">超魔法少女系列-吉伊卡哇</div>
+                <div class="product-price">NT$550</div>
+                <button class="add-to-cart" onclick="addToCart('超魔法少女系列-吉伊卡哇', 550)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="bracelets">
+            <img src="bracelets2.jpg" alt="生日系列-吉伊卡哇">
+            <div class="product-details">
+                <div class="product-title">生日系列-吉伊卡哇</div>
+                <div class="product-price">NT$450</div>
+                <button class="add-to-cart" onclick="addToCart('生日系列-吉伊卡哇', 450)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="bracelets">
+            <img src="bracelets3.jpg" alt="出遊系列-吉伊卡哇">
+            <div class="product-details">
+                <div class="product-title">出遊系列-吉伊卡哇</div>
+                <div class="product-price">NT$700</div>
+                <button class="add-to-cart" onclick="addToCart('出遊系列-吉伊卡哇', 700)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="bracelets">
+            <img src="bracelets4.jpg" alt="麵包系列-吉伊卡哇">
+            <div class="product-details">
+                <div class="product-title">麵包系列-吉伊卡哇</div>
+                <div class="product-price">NT$600</div>
+                <button class="add-to-cart" onclick="addToCart('麵包系列-吉伊卡哇', 600)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="bracelets">
+            <img src="bracelets5.jpg" alt="車車吉伊卡哇">
+            <div class="product-details">
+                <div class="product-title">車車吉伊卡哇</div>
+                <div class="product-price">NT$750</div>
+                <button class="add-to-cart" onclick="addToCart('車車吉伊卡哇', 750)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="bracelets">
+            <img src="bracelets6.jpg" alt="壽司系列-吉伊卡哇">
+            <div class="product-details">
+                <div class="product-title">壽司系列-吉伊卡哇</div>
+                <div class="product-price">NT$600</div>
+                <button class="add-to-cart" onclick="addToCart('壽司系列-吉伊卡哇', 600)">加入購物車</button>
+            </div>
+        </div>
+
+        
+        <div class="product-card" data-category="necklaces">
+            <img src="necklaces1.jpg" alt="壽司師傅烏薩奇">
+            <div class="product-details">
+                <div class="product-title">壽司師傅烏薩奇</div>
+                <div class="product-price">NT$900</div>
+                <button class="add-to-cart" onclick="addToCart('壽司師傅烏薩奇', 900)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="necklaces">
+            <img src="necklaces2.jpg" alt="餐廳烏薩奇">
+            <div class="product-details">
+                <div class="product-title">餐廳烏薩奇</div>
+                <div class="product-price">NT$800</div>
+                <button class="add-to-cart" onclick="addToCart('餐廳烏薩奇', 800)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="necklaces">
+            <img src="necklaces3.jpg" alt="小腳烏薩奇">
+            <div class="product-details">
+                <div class="product-title">小腳烏薩奇</div>
+                <div class="product-price">NT$700</div>
+                <button class="add-to-cart" onclick="addToCart('小腳烏薩奇', 700)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="necklaces">
+            <img src="necklaces4.jpg" alt="觀光烏薩奇">
+            <div class="product-details">
+                <div class="product-title">觀光烏薩奇</div>
+                <div class="product-price">NT$650</div>
+                <button class="add-to-cart" onclick="addToCart('觀光烏薩奇', 650)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="necklaces">
+            <img src="necklaces5.jpg" alt="睡衣烏薩奇">
+            <div class="product-details">
+                <div class="product-title">睡衣烏薩奇</div>
+                <div class="product-price">NT$900</div>
+                <button class="add-to-cart" onclick="addToCart('睡衣烏薩奇', 900)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="necklaces">
+            <img src="necklaces6.jpg" alt="花仙子烏薩奇">
+            <div class="product-details">
+                <div class="product-title">花仙子烏薩奇</div>
+                <div class="product-price">NT$700</div>
+                <button class="add-to-cart" onclick="addToCart('花仙子烏薩奇', 700)">加入購物車</button>
+            </div>
+        </div>
+
+        
+        <div class="product-card" data-category="xiaoba">
+            <img src="xiaoba1.jpg" alt="監獄系列-小八">
+            <div class="product-details">
+                <div class="product-title">監獄系列-小八</div>
+                <div class="product-price">NT$700</div>
+                <button class="add-to-cart" onclick="addToCart('監獄系列-小八', 700)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="xiaoba">
+            <img src="xiaoba2.jpg" alt="小八師傅">
+            <div class="product-details">
+                <div class="product-title">小八師傅</div>
+                <div class="product-price">NT$550</div>
+                <button class="add-to-cart" onclick="addToCart('小八師傅', 550)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="xiaoba">
+            <img src="xiaoba3.jpg" alt="廚師系列小八">
+            <div class="product-details">
+                <div class="product-title">廚師系列小八</div>
+                <div class="product-price">NT$550</div>
+                <button class="add-to-cart" onclick="addToCart('廚師系列小八', 550)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="xiaoba">
+            <img src="xiaoba4.jpg" alt="殭屍小八">
+            <div class="product-details">
+                <div class="product-title">殭屍小八</div>
+                <div class="product-price">NT$700</div>
+                <button class="add-to-cart" onclick="addToCart('殭屍小八', 700)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="xiaoba">
+            <img src="xiaoba5.jpg" alt="平頭小八">
+            <div class="product-details">
+                <div class="product-title">平頭小八</div>
+                <div class="product-price">NT$600</div>
+                <button class="add-to-cart" onclick="addToCart('平頭小八', 600)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="xiaoba">
+            <img src="xiaoba6.jpg" alt="聖誕系列-小八">
+            <div class="product-details">
+                <div class="product-title">聖誕系列-小八</div>
+                <div class="product-price">NT$900</div>
+                <button class="add-to-cart" onclick="addToCart('聖誕系列-小八', 900)">加入購物車</button>
+            </div>
+        </div>
+
+       
+        <div class="product-card" data-category="xiaojiachong">
+            <img src="xiaojiachong1.jpg" alt="小甲蟲s娃">
+            <div class="product-details">
+                <div class="product-title">小甲蟲s娃</div>
+                <div class="product-price">NT$750</div>
+                <button class="add-to-cart" onclick="addToCart('小甲蟲s娃', 750)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="xiaojiachong">
+            <img src="xiaojiachong2.jpg" alt="魔法小甲蟲">
+            <div class="product-details">
+                <div class="product-title">魔法小甲蟲</div>
+                <div class="product-price">NT$650</div>
+                <button class="add-to-cart" onclick="addToCart('魔法小甲蟲', 650)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="xiaojiachong">
+            <img src="xiaojiachong3.jpg" alt="螢幕掛小甲蟲">
+            <div class="product-details">
+                <div class="product-title">螢幕掛小甲蟲</div>
+                <div class="product-price">NT$550</div>
+                <button class="add-to-cart" onclick="addToCart('螢幕掛小甲蟲', 550)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="xiaojiachong">
+            <img src="xiaojiachong4.jpg" alt="麵包小甲蟲">
+            <div class="product-details">
+                <div class="product-title">麵包小甲蟲</div>
+                <div class="product-price">NT$600</div>
+                <button class="add-to-cart" onclick="addToCart('麵包小甲蟲', 600)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="xiaojiachong">
+            <img src="xiaojiachong5.jpg" alt="大甲蟲">
+            <div class="product-details">
+                <div class="product-title">大甲蟲</div>
+                <div class="product-price">NT$900</div>
+                <button class="add-to-cart" onclick="addToCart('大甲蟲', 900)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="JUNGBIN">
+            <img src="bracelets0.jpg" alt="薑餅人吉伊卡哇">
+            <div class="product-details">
+                <div class="product-title">薑餅人吉伊卡哇</div>
+                <div class="product-price">NT$900</div>
+                <button class="add-to-cart" onclick="addToCart('薑餅人吉伊卡哇', 900)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="JUNGBIN">
+            <img src="necklases0.jpg" alt="薑餅人烏薩奇">
+            <div class="product-details">
+                <div class="product-title">薑餅人烏薩奇</div>
+                <div class="product-price">NT$900</div>
+                <button class="add-to-cart" onclick="addToCart('薑餅人烏薩奇', 900)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="JUNGBIN">
+            <img src="xiaoba0.jpg" alt="薑餅人小八">
+            <div class="product-details">
+                <div class="product-title">薑餅人小八</div>
+                <div class="product-price">NT$900</div>
+                <button class="add-to-cart" onclick="addToCart('薑餅人小八', 900)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="JUNGBIN">
+            <img src="ballchi.jpg" alt="足球系列-吉伊">
+            <div class="product-details">
+                <div class="product-title">足球系列-吉伊</div>
+                <div class="product-price">NT$1050</div>
+                <button class="add-to-cart" onclick="addToCart('足球系列-吉伊', 900)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="JUNGBIN">
+            <img src="ball5.jpg" alt="足球系列-烏薩奇">
+            <div class="product-details">
+                <div class="product-title">足球系列-烏薩奇</div>
+                <div class="product-price">NT$1050</div>
+                <button class="add-to-cart" onclick="addToCart('足球系列-烏薩奇', 900)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="JUNGBIN">
+            <img src="ball8.jpg" alt="足球系列-小八">
+            <div class="product-details">
+                <div class="product-title">足球系列-小八</div>
+                <div class="product-price">NT$1050</div>
+                <button class="add-to-cart" onclick="addToCart('足球系列-小八', 900)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="JUNGBIN">
+            <img src="ff8.png" alt="節分系列-小八">
+            <div class="product-details">
+                <div class="product-title">節分系列-小八</div>
+                <div class="product-price">NT$740</div>
+                <button class="add-to-cart" onclick="addToCart('節分系列-小八', 900)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="JUNGBIN">
+            <img src="ff5.jpg" alt="節分系列-烏薩奇">
+            <div class="product-details">
+                <div class="product-title">節分系列-烏薩奇</div>
+                <div class="product-price">NT$740</div>
+                <button class="add-to-cart" onclick="addToCart('節分系列-烏薩奇', 900)">加入購物車</button>
+            </div>
+        </div>
+        <div class="product-card" data-category="JUNGBIN">
+            <img src="ffchi.jpg" alt="節分系列-吉伊">
+            <div class="product-details">
+                <div class="product-title">節分系列-吉伊</div>
+                <div class="product-price">NT$740</div>
+                <button class="add-to-cart" onclick="addToCart('節分系列-吉伊', 900)">加入購物車</button>
+            </div>
+        </div>        
+    </div>
+
+    <footer>
+        &copy; 2024 吉伊卡哇電商網站. 保留所有權利.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginLink = document.querySelector("a[href='login.html']");
+            if (sessionStorage.getItem("loggedIn")) { // 檢查登入狀態
+                loginLink.textContent = "已登入";
+            }
+        });
+    </script>
+
+    <!-- 彈窗背景遮罩 -->
+<div id="overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
+
+<!-- 彈窗內容 -->
+<div id="popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); width: 400px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); z-index: 1000; transition: transform 0.3s ease, opacity 0.3s ease; opacity: 0;">
+    <img id="popup-image" src="" alt="商品圖片" style="width: 100%; border-radius: 8px; margin-bottom: 15px;">
+    <h3 id="popup-title" style="margin-bottom: 10px; font-size: 20px;">商品名稱</h3>
+    <input id="popup-quantity" type="number" value="1" min="1" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px;">
+    <button onclick="addToCartFromPopup()" style="width: 100%; padding: 10px; background: #7cc2d8; color: white; border: none; border-radius: 6px; margin-bottom: 10px; cursor: pointer;">加入購物車</button>
+    <button onclick="closePopup()" style="width: 100%; padding: 10px; background: #ccc; color: black; border: none; border-radius: 6px; cursor: pointer;">關閉</button>
+</div>
+
+<div class="popup-title" data-product-id="1" style="cursor: pointer; margin-bottom: 10px;">
+    <img src="ring1.jpg" alt="寄生小桃">
+    <h3>寄生小桃</h3>
+    <p>阿好煩</p>
+</div>
+
+
+<script>
+    
+    // 開啟彈窗
+    function showPopup(image, title, price) {
+        document.getElementById('popup-image').src = image;
+        document.getElementById('popup-title').textContent = title;
+        document.getElementById('popup').dataset.price = price;
+        document.getElementById('popup').dataset.title = title;
+        document.getElementById('overlay').style.display = 'block';
+
+        const popup = document.getElementById('popup');
+        popup.style.display = 'block';
+        setTimeout(() => {
+            popup.style.transform = 'translate(-50%, -50%) scale(1)';
+            popup.style.opacity = '1';
+        }, 10);
+    }
+
+    
+
+    // 關閉彈窗
+    function closePopup() {
+        const popup = document.getElementById('popup');
+        popup.style.transform = 'translate(-50%, -50%) scale(0.8)';
+        popup.style.opacity = '0';
+        setTimeout(() => {
+            popup.style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }, 300);
+    }
+
+    // 添加商品到購物車
+    function addToCartFromPopup() {
+        const popup = document.getElementById('popup');
+        const title = popup.dataset.title;
+        const price = parseFloat(popup.dataset.price);
+        const quantity = parseInt(document.getElementById('popup-quantity').value);
+
+        // 使用你的 addToCart 方法更新購物車
+        addToCart(title, price, quantity);
+
+        // 顯示提示訊息
+        showCartMessage(`${title} 已加入購物車!`);
+        closePopup();
+    }
+
+    // 為商品卡片添加點擊事件
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const image = card.querySelector('img').src;
+            const title = card.querySelector('.product-title').textContent;
+            const priceText = card.querySelector('.product-price').textContent.replace('NT$', '');
+            showPopup(image, title, priceText);
+        });
+    });
+</script>
+
+    
+    
+    </body>
+    
+</html>

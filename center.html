@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員中心</title>
+    <style>
+        /* 設定基本頁面樣式 */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 會員中心的容器 */
+        .container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 左側會員資料區域 */
+        .profile-left {
+            width: 30%;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-left img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #4CAF50;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .profile-left input[type="file"] {
+            display: none;
+        }
+
+        .profile-left h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .profile-left p {
+            font-size: 16px;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .profile-left button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        /* 右側會員資料區域 */
+        .profile-right {
+            width: 65%;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-right h3 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .profile-right .record {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+        }
+
+        .profile-right .record p {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .profile-right .record span {
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* 頁面底部 */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 左側：大頭照和基本資料 -->
+        <div class="profile-left">
+            <h2>會員大頭照</h2>
+            <label for="profile-photo">
+                <img src="https://via.placeholder.com/150" alt="大頭照" id="profile-photo-img">
+            </label>
+            <input type="file" id="profile-photo" accept="image/*" onchange="changePhoto(event)">
+            <h2>姓名: 123</h2>
+            <p>電子郵件: zhangsan@example.com</p>
+            <button>編輯資料</button>
+        </div>
+
+        <!-- 右側：購物紀錄和累計購物金 -->
+        <div class="profile-right">
+            <h3>會員資訊</h3>
+
+            <!-- 購物紀錄 -->
+            <div class="record">
+                <p>最近購物紀錄</p>
+                <span>2024/12/30 - 訂單編號: 123456</span>
+            </div>
+            <div class="record">
+                <p>最近購物紀錄</p>
+                <span>2024/12/20 - 訂單編號: 123457</span>
+            </div>
+
+            <!-- 累計購物金 -->
+            <div class="record">
+                <p>累計購物金</p>
+                <span>NT$ 12,350</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 頁面底部 -->
+    <footer>
+        <p>&copy; 吉伊卡哇團隊 會員中心 | 版權所有</p>
+    </footer>
+
+    <script>
+        function changePhoto(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const img = document.getElementById('profile-photo-img');
+                img.src = e.target.result;
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+
+</body>
+</html>

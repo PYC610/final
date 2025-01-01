@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="吉伊卡哇購物網站提供多樣化的吉伊卡哇相關商品，讓您的生活更添趣味！">
+    <meta name="keywords" content="吉伊卡哇, 購物, 商品, 趣味, 優質">
+    <meta name="author" content="吉伊卡哇團隊">
+    <title>吉伊卡哇購物網站 - 首頁</title>
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f1e3;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #ffcccb;
+            color: #333;
+            text-align: center;
+            padding: 2rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.8rem;
+            font-weight: bold;
+        }
+        header p {
+            margin: 0.5rem 0 0;
+            font-size: 1.3rem;
+        }
+        nav {
+            background-color: #333;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav ul li {
+            margin: 0 20px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 25px;
+            display: block;
+            font-size: 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        nav ul li a:hover {
+            background-color: #575757;
+        }
+        main {
+            flex: 1;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        #intro {
+            margin-bottom: 40px;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 800px;
+            margin: 20px auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #intro h2 {
+            font-size: 2.2rem;
+            color: #333;
+        }
+        #intro p {
+            font-size: 1.2rem;
+            color: #555;
+            line-height: 1.8;
+        }
+        #dynamic-ad {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        #dynamic-ad img {
+            width: 30%;
+            height: auto;
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        #dynamic-ad img.active {
+            opacity: 1;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #ffcccb;
+            font-size: 0.9rem;
+            color: #333;
+            border-top: 1px solid #ddd;
+        }
+        footer p {
+            margin: 0;
+        }
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            header p {
+                font-size: 1rem;
+            }
+            nav ul li a {
+                font-size: 0.9rem;
+                padding: 10px 15px;
+            }
+            #intro h2 {
+                font-size: 1.8rem;
+            }
+            #intro p {
+                font-size: 1rem;
+            }
+            #dynamic-ad img {
+                width: 30%;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const images = document.querySelectorAll("#dynamic-ad img");
+            let currentIndex = 0;
+
+            function showNextImage() {
+                images[currentIndex].classList.remove("active");
+                currentIndex = (currentIndex + 1) % images.length;
+                images[currentIndex].classList.add("active");
+            }
+
+            images[currentIndex].classList.add("active");
+            setInterval(showNextImage, 3000);
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <h1>歡迎來到吉伊卡哇購物網站</h1>
+        <p>提供最優質的吉伊卡哇商品，讓您的生活更添趣味！</p>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#">首頁</a></li>
+            <li><a href="期末.html">商品首頁</a></li>
+            <li><a href="login.html">會員登入</a></li>
+        </ul>
+    </nav>
+    <main>
+        <section id="intro">
+            <h2>關於我們</h2>
+            <p>吉伊卡哇購物網站專注於售賣多樣化的吉伊卡哇相關商品，從收藏品到實用小物，應有盡有！</p>
+        </section>
+
+        <section id="intro">
+            <h2>系列商品</h2>
+            <p>以下系列商品在商品列表中均有販售!</p>
+        </section>
+        <section id="dynamic-ad">   
+            <div class="ad-description">聖誕限定</div>
+            <img src="ad1.jpg" alt="聖誕限定">
+            <div class="ad-description">J聯盟足球</div>
+            <img src="ad2.jpg" alt="J聯盟足球">
+            <div class="ad-description">節分撒豆</div>
+            <img src="ad3.jpg" alt="節分撒豆">
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 吉伊卡哇購物網站 | 最棒的吉伊卡哇商品等著您</p>
+    </footer>
+</body>
+</html>

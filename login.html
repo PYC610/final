@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員登入</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .login-container {
+            width: 300px;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 90%; /* 使輸入框與登入按鈕的寬度一致 */
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%; /* 設定登入按鈕寬度與輸入框一致 */
+            padding: 10px;
+            background-color: #df8460;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #df8460;
+        }
+
+        .divider {
+            margin: 20px 0;
+            border-top: 1px dashed #ccc;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #df8460;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .register-btn:hover {
+            background-color: #df8460;
+        }
+
+        .or-text {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>會員登入</h2>
+        <form action="期末.html" method="get">
+            <input type="text" id="username" name="username" placeholder="帳號" required>
+            <input type="password" id="password" name="password" placeholder="密碼" required>
+            <a href="忘記密碼頁面.html" class="forgot-password">忘記密碼?</a>
+            <button type="submit">登入</button>
+        </form>
+        
+        <!-- 水平虛線 -->
+        <div class="divider"></div>
+
+        <!-- 顯示「或」字樣 -->
+        <div class="or-text">或</div>
+
+        <!-- 會員註冊按鈕 -->
+        <button class="register-btn" onclick="location.href='註冊頁面.html'">會員註冊</button>
+    </div>
+
+
+    <script>
+        document.querySelector("form[action='期末.html']").addEventListener("submit", function() {
+            sessionStorage.setItem("loggedIn", true); // 儲存已登入狀態
+        });
+    </script>
+    
+    </body>
+    
+</html>

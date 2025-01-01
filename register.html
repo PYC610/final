@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員註冊</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .register-container {
+            background-color: white;
+            padding: 20px;
+            width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+            text-align: left; /* 讓所有標籤靠左 */
+        }
+
+        input, select, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            display: block;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+        }
+
+        .country-code {
+            width: 80px;
+        }
+
+        .phone-number {
+            width: calc(100% - 90px);
+            display: inline-block;
+        }
+
+        /* 調整性別選擇框寬度和置中對齊 */
+        #gender {
+            width: 70px; /* 設定寬度使選擇框與 "男性" 字樣寬度差不多 */
+            text-align: center;
+            display: inline-block;
+        }
+
+        /* 讓性別選項文字居中 */
+        #gender option {
+            text-align: center; /* 這裡使 "男性" 和 "女性" 文字居中 */
+        }
+
+        .success-message {
+            text-align: center;
+            color: green;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-container">
+        <h2>會員註冊</h2>
+        <form id="registerForm">
+            <!-- 顧客名稱 -->
+            <label for="name">顧客名稱</label>
+            <input type="text" id="name" name="name" required placeholder="請輸入顧客名稱">
+
+            <!-- 電子信箱 -->
+            <label for="email">電子信箱</label>
+            <input type="email" id="email" name="email" required placeholder="請輸入電子信箱" oninput="validateEmail()">
+            <div id="emailError" class="error"></div>
+
+            <!-- 電話號碼 -->
+            <label for="phone">電話號碼</label>
+            <div>
+                <select id="countryCode" class="country-code" name="countryCode">
+                    <option value="+886">+886(台灣)</option>
+                    <option value="+1">+86(中國)</option>
+                    <option value="+44">+852(香港)</option>
+                    <option value="+81">+91(印度)</option>
+                    <!-- 可以根據需要添加更多國家代碼 -->
+                </select>
+                <input type="tel" id="phone" name="phone" class="phone-number" required placeholder="請輸入電話號碼" pattern="\d*" maxlength="15">
+            </div>
+
+            <!-- 性別 -->
+            <label for="gender">性別</label>
+            <select id="gender" name="gender" required>
+                <option value="male">男性</option>
+                <option value="female">女性</option>
+            </select>
+
+            <!-- 生日日期 -->
+            <label for="birthday">生日</label>
+            <input type="date" id="birthday" name="birthday" required>
+
+            <!-- 提交按鈕 -->
+            <button type="submit">註冊</button>
+        </form>
+
+        <!-- 註冊成功訊息 -->
+        <div id="successMessage" class="success-message" style="display: none;">
+            註冊成功!
+        </div>
+    </div>
+
+    <script>
+        // 驗證電子信箱是否以 .com 結尾
+        function validateEmail() {
+            const emailInput = document.getElementById('email');
+            const emailError = document.getElementById('emailError');
+            const email = emailInput.value;
+
+            if (!email.endsWith('.com')) {
+                emailError.textContent = '此為無效信箱，必須以.com結尾';
+            } else {
+                emailError.textContent = '';
+            }
+        }
+
+        // 表單提交驗證
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // 驗證電子信箱是否有效
+            const email = document.getElementById('email').value;
+            if (!email.endsWith('.com')) {
+                alert('請輸入有效的電子信箱 (以 .com 結尾)');
+                return;
+            }
+
+            // 顯示註冊成功訊息
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+
+            // 延遲跳轉到期末.html
+            setTimeout(function() {
+                window.location.href = "期末.html";
+            }, 2000); // 2秒後跳轉
+        });
+    </script>
+
+</body>
+</html>
